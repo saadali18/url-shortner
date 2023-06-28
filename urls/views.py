@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Url
 from django.http import HttpResponse
-from .utils import generate_short_url, decimal_to_base62
+from .utils import generate_short_url
 
 # Create your views here.
 def index(request):
@@ -12,11 +12,11 @@ def create(request):
         long = request.POST['link']
         url, created = Url.objects.get_or_create(long=long)
         if created:
-            short = decimal_to_base62()
+            short = generate_short_url(url.long)
             url.short = short
             if not url.is_unique:
                 while not url.is_unique:
-                    short = decimal_to_base62()
+                    short = generate_short_url(url.long)
                     url.short = short
             url.save()
 
